@@ -1,21 +1,21 @@
-const digitsRegex = /Digits=[\d-]*/;
-
 module.exports = async function (req) {
   const { bt, args: { body, headers } } = req;
 
   let forwardedBody = body;
 
   try {
-    const match = body.match(digitsRegex);
-    if (match) {
-      const digits = match[0].substring(7);
+    const params = new URLSearchParams(body);
+    const digits = params.get('Digits');
+    if (digits) {
 
       const token = await bt.tokenize({
         type: 'card_number',
         data: digits,
       });
 
-      forwardedBody = body.replace(digitsRegex, `Digits=${token.id}`);
+      params.set('Digits', token.id);
+
+      forwardedBody = params.toString();
     }
   } catch {
     forwardedBody = 'error'

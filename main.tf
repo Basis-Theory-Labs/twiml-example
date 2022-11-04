@@ -36,10 +36,10 @@ resource "basistheory_reactor" "card_tokenizer_reactor" {
 }
 
 resource "basistheory_proxy" "inbound_proxy" {
-  name            = "My Proxy"
-  destination_url = "https://echo.basistheory.com/anything" // replace this with your API endpoint
+  name               = "My Proxy"
+  destination_url    = "https://echo.basistheory.com/anything" // replace this with your API endpoint
   request_reactor_id = basistheory_reactor.card_tokenizer_reactor.id
-  require_auth = false
+  require_auth       = false
 }
 
 output "inbound_proxy_key" {
