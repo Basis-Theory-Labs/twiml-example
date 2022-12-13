@@ -2,7 +2,7 @@ terraform {
   required_providers {
     basistheory = {
       source  = "basis-theory/basistheory"
-      version = ">= 0.5.0"
+      version = ">= 0.7.0"
     }
   }
 }
@@ -21,25 +21,14 @@ resource "basistheory_application" "card_tokenizer_application" {
   ]
 }
 
-resource "basistheory_reactor_formula" "card_tokenizer_formula" {
-  name        = "Card Tokenizer Formula"
-  description = "Receives card from Twilio and tokenizes it"
-  type        = "private"
-  icon        = "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-  code        = file("./card-tokenizer.js")
-}
-
-resource "basistheory_reactor" "card_tokenizer_reactor" {
-  name           = "Card Tokenizer Reactor"
-  formula_id     = basistheory_reactor_formula.card_tokenizer_formula.id
-  application_id = basistheory_application.card_tokenizer_application.id
-}
-
 resource "basistheory_proxy" "inbound_proxy" {
   name               = "My Proxy"
   destination_url    = "https://echo.basistheory.com/anything" // replace this with your API endpoint
-  request_reactor_id = basistheory_reactor.card_tokenizer_reactor.id
   require_auth       = false
+  request_transform  = {
+    code = file("./card-tokenizer.js")
+  }
+  application_id = basistheory_application.card_tokenizer_application.id
 }
 
 output "inbound_proxy_key" {

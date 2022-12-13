@@ -22,9 +22,7 @@ module.exports = async function (req) {
   }
 
   return {
-    raw: {
       body: forwardedBody,
-      headers,
-    }
+      headers
   }
 };
